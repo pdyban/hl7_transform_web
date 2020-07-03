@@ -1,0 +1,47 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<div class="container">
+
+  <div class="starter-template">
+    <h1>HL7 Transform</h1>
+    <p class="lead">Easily transform HL7 messages using a mapping scheme.
+      <a href="https://hl7-transform.readthedocs.io/en/latest/mapping.html">Documentation</a>.
+    </p>
+
+  <form method="post" action="/">
+    {% if alert.error_status %}
+    <div class="alert alert-warning" role="alert" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      {{ alert.text }}
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          {{ alert.trace }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      {{ form.message.label }}
+      {{ form.message(id='message_in', rows=7, class_='form-control') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.mapping.label }} (<a href="https://hl7-transform.readthedocs.io/en/latest/mapping.html">?</a>)
+      {{ form.mapping(id='mapping_scheme', rows=7, class_='form-control') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.message_out.label }}
+      {{ form.message_out(id='message_out', rows=7, class_='form-control', readonly='True') }}
+    </div>
+    {{ form.csrf_token }}
+    <input type="submit" class="btn btn-primary" value="Transform" />
+  </form>
+
+  </div>
+
+</div><!-- /.container -->
+
+{% endblock %}
