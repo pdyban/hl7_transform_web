@@ -3,3 +3,4 @@ flask
 wtforms
 flask_wtf
 gunicorn
+pytest
