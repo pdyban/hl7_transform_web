@@ -25,10 +25,6 @@ jobs:
         sudo dpkg -i google-chrome-stable_current_amd64.deb
         wget -q https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
-        ls
         gunicorn app:app &
-        sleep 5
-        ls
-        wget -O index.html http://localhost:8000
-        cat index.html
+        sleep 3
         pytest
