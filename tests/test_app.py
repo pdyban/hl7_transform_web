@@ -14,7 +14,10 @@ def client():
      # start Chrome
     options = webdriver.ChromeOptions()
     # options.add_argument('headless')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--no-sandbox')
     #options.binary = os.path.join(os.path.abspath('.'), 'chromedriver')
+    print(os.path.join(os.path.abspath('.'), 'chromedriver'))
     browser = webdriver.Chrome(os.path.join(os.path.abspath('.'), 'chromedriver'), options=options)
     browser.set_page_load_timeout(30)
 
