@@ -27,6 +27,7 @@ jobs:
         unzip chromedriver_linux64.zip
         ls
         gunicorn app:app &
+        sleep 5
         ls
         wget -O index.html http://localhost:8000
         cat index.html
