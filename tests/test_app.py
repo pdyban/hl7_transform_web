@@ -26,8 +26,8 @@ def client():
             # e.g. app.init_db()
             pass
          # start the Flask server in a thread
-        thread = threading.Thread(target=app.run, daemon=True)
-        thread.start()
+        # thread = threading.Thread(target=app.run, daemon=True)
+        # thread.start()
         yield browser
 
     browser.close()
