@@ -1,7 +1,10 @@
 from app import app
 from app import forms
-from flask import render_template
+from flask import render_template, abort
 from flask import request
+from collections import namedtuple
+from markupsafe import escape
+import os
 from hl7_transform.mapping import HL7Mapping
 from hl7_transform.transform import HL7Transform
 from hl7_transform.message import HL7Message
@@ -23,12 +26,9 @@ def home():
     if form.validate_on_submit():
         try:
             message = HL7Message.from_string(form.message.data)
-            print(type(message.hl7_message))
             mapping = HL7Mapping.from_string(form.mapping.data)
             transform = HL7Transform(mapping)
             message_out = transform.execute(message)
-            print('OUTOUT', type(message_out.hl7_message))
-            print('ININ', type(message))
             form.message_out.data = message.to_string()
         except APIError as e:
             alert.text = 'Could not read HL7 message. Please check your format.'
@@ -44,14 +44,32 @@ def home():
             alert.error_status = True
     return render_template("home.html", form=form, alert=alert)
 
-@app.route('/example')
+@app.route('/examples')
 def example():
+    ExampleItem = namedtuple('ExampleItem', ['name', 'path'])
+    items = []
+    example_dir = 'app/data/examples'
+    for example_item in os.listdir(example_dir):
+        try:
+            with open(os.path.join(example_dir, example_item, 'description.txt')) as f:
+                name = f.read()
+                items.append(ExampleItem(name=name, path=f'/examples/{example_item}'))
+        except FileNotFoundError as e:
+            print(e)
+            continue
+    return render_template("examples.html", items=items)
+
+@app.route('/examples/<path:example_name>')
+def example_page(example_name):
+    if not os.path.exists(f'app/data/examples/{example_name}'):
+        return abort(404)
+    alert = FormError()
     form = forms.TransForm()
-    with open('app/data/example.hl7') as f:
+    with open(f'app/data/examples/{example_name}/message.hl7') as f:
         form.message.data = f.read().strip()
-    with open('app/data/example.json') as f:
+    with open(f'app/data/examples/{example_name}/mapping.json') as f:
         form.mapping.data = f.read().strip()
-    return render_template("home.html", form=form, alert=False)
+    return render_template("home.html", form=form, alert=alert)
 
 @app.route('/about')
 def about():

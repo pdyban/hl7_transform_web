@@ -4,3 +4,5 @@ wtforms
 flask_wtf
 gunicorn
 pytest
+selenium
+markupsafe

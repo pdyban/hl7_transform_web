@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="starter-template">
+    <h1>Examples</h1>
+    <p class="lead">List of ready-made working examples showing how to use HL7 Transform Web:</p>
+    <ul class="list-group" id="example_list">
+      {% for item in items %}
+      <li class="list-group-item"><a href="{{ item.path }}">{{ item.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div><!-- container -->
+{% endblock %}
