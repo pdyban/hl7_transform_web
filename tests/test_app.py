@@ -33,7 +33,7 @@ def client():
     browser.close()
 
 def test_navbar(client):
-    client.get('localhost:5000/')
+    client.get('localhost:8000/')
     navbar = client.find_element_by_id('navbarCollapse')
     assert navbar is not None
     options = navbar.find_elements_by_tag_name('li')
@@ -47,7 +47,7 @@ def test_navbar(client):
         assert 'HL7 Transform Web UI' == client.title
 
 def test_index(client):
-    client.get('localhost:5000/')
+    client.get('localhost:8000/')
     assert 'HL7 Transform Web UI' == client.title
     message_field = client.find_element_by_id('message_in')
     assert message_field is not None
@@ -57,7 +57,7 @@ def test_index(client):
     message_field.submit()
 
 def test_about(client):
-    client.get('localhost:5000/about')
+    client.get('localhost:8000/about')
     assert 'HL7 Transform Web UI' == client.title
     header_field = client.find_element_by_tag_name('h1')
     print(header_field)
@@ -73,7 +73,7 @@ def test_about(client):
     assert 'developed at Doctolib' in text_field.text
 
 def test_examples(client):
-    client.get('localhost:5000/examples')
+    client.get('localhost:8000/examples')
     assert 'HL7 Transform Web UI' == client.title
     example_list = client.find_element_by_id('example_list')
     assert example_list is not None
