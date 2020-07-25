@@ -26,6 +26,6 @@ jobs:
         wget -q https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
         ls
-        gunicorn -b 5000 app:app &
+        gunicorn app:app &
         ls
         pytest
