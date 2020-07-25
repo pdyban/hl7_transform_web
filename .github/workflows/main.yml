@@ -28,4 +28,6 @@ jobs:
         ls
         gunicorn app:app &
         ls
+        wget -O index.html http://localhost:8000
+        cat index.html
         pytest
