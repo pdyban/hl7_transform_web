@@ -24,6 +24,7 @@ jobs:
         wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i google-chrome-stable_current_amd64.deb
         wget -q https://chromedriver.storage.googleapis.com/85.0.4183.38/chromedriver_linux64.zip
-        ls
         unzip chromedriver_linux64.zip
+        ls
+        google-chrome &
         pytest
