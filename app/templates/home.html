@@ -27,7 +27,7 @@
 
     <div class="form-group">
       {{ form.message.label }}
-      {{ form.message(id='message_in', rows=7, class_='form-control') }}
+      {{ form.message(id='message_in', rows=7, class_='form-control textarea-nowrap') }}
     </div>
 
     <div class="form-group border rounded p-2">
@@ -62,7 +62,7 @@
 
       <div class="tab-pane" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
         <p class="align-self-start mt-2">Edit mapping scheme directly in JSON format (<a href="https://hl7-transform.readthedocs.io/en/latest/mapping.html">?</a>)</p>
-        {{ form.mapping(id='mapping_scheme', rows=20, class_='form-control') }}
+        {{ form.mapping(id='mapping_scheme', rows=20, class_='form-control textarea-nowrap') }}
       </div>
     </div>
     </div>

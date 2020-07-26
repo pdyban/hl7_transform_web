@@ -5,7 +5,9 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+.textarea-nowrap {
+  white-space: nowrap;
+}
 textarea {
   font-family: monospace;
-  white-space: nowrap;
 }
