@@ -1,12 +1,12 @@
 var supported_rules = {
-  'set_value': create_rule_set_value,
+  'add_values': create_rule_add_values,
+  'concatenate_values': create_rule_concatenate_values,
   'copy_value': create_rule_copy_value,
   'generate_alphanumeric_id': create_rule_generate_alphanumeric_id,
-  'generate_numeric_id': create_rule_generate_numeric_id,
   'generate_current_datetime': create_rule_generate_current_datetime,
+  'generate_numeric_id': create_rule_generate_numeric_id,
   'set_end_time': create_rule_set_end_time,
-  'add_values': create_rule_add_values,
-  'concatenate_values': create_rule_concatenate_values
+  'set_value': create_rule_set_value,
 }
 
 $(function() {
