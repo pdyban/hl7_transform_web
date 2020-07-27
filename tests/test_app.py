@@ -136,6 +136,7 @@ def test_can_switch_to_quick_view(client):
     # given a JSON-formatted scheme, switch to quick view
     client.find_element_by_id('advanced-tab').click()
     textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
+    textarea.click()
     textarea.clear()
     textarea.send_keys(json.dumps(ops))
     client.save_screenshot('screenshot.png')
