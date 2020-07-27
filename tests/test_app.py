@@ -136,12 +136,12 @@ def test_can_switch_to_quick_view(client):
     # given a JSON-formatted scheme, switch to quick view
     client.find_element_by_id('advanced-tab').click()
     # textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
-    textarea = WebDriverWait(client, 10).until(EC.presence_of_element_located((By.XPATH, '//textarea[@id="mapping_scheme"]')))
+    client.save_screenshot('screenshot.png')
+    textarea = WebDriverWait(client, 10).until(EC.element_to_be_clickable((By.XPATH, '//textarea[@id="mapping_scheme"]')))
     # textarea.click()
     client.execute_script("arguments[0].click();", textarea)
     textarea.clear()
     textarea.send_keys(json.dumps(ops))
-    client.save_screenshot('screenshot.png')
 
     # switch to quick view and verify list of rules
     client.find_element_by_id('quick-tab').click()
