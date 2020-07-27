@@ -51,7 +51,6 @@ $("#transform-btn").on('click', function(e) {
 });
 
 function updateAdvancedView() {
-  console.log('updateAdvancedView');
   var l = [];
 
   function convertToDict(item) {
