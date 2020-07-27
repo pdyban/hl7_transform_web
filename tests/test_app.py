@@ -3,8 +3,10 @@ import os
 import sys
 sys.path.append(os.path.abspath('.'))
 print(sys.path)
+import json
 
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import threading
 from app import app
 
@@ -18,6 +20,7 @@ def client():
     options.add_argument('--no-sandbox')
     #options.binary = os.path.join(os.path.abspath('.'), 'chromedriver')
     browser = webdriver.Chrome(os.path.join(os.path.abspath('.'), 'chromedriver'), options=options)
+    browser.set_window_size(1280, 1024)
     browser.set_page_load_timeout(30)
 
     app.config['TESTING'] = True
@@ -86,3 +89,82 @@ def test_examples(client):
     for href in hrefs:
         client.get(href)
         assert 'HL7 Transform Web UI' == client.title
+
+def test_can_add_new_rule(client):
+    client.get('http://localhost:8000')
+    # create a new rule and verify that it was created
+    len0 = len(client.find_elements_by_xpath('//ul[@id="rule-list"]/li'))
+    new_rule_button = client.find_element_by_id('newRuleButton')
+    new_rule_button.click()
+    link = client.find_element_by_xpath('//a[@class="dropdown-item"][text()="set_value"]')
+    assert link is not None
+    link.click()
+    rules = client.find_elements_by_xpath('//ul[@id="rule-list"]/li')
+    assert len(rules) == len0 + 1
+    div = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+    assert div.text == 'set_value'
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    target_field.send_keys('SCH.12')
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    target_field.send_keys('Some value')
+
+    # switch to advanced view and verify JSON formatted mapping scheme
+    client.find_element_by_id('advanced-tab').click()
+    textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
+    text = textarea.get_attribute("value")
+    assert len(text) > 3
+    assert '"operation": "set_value",' in text
+    assert '"target_field": "SCH.12",' in text
+    assert '"args": {' in text
+    assert '"value": "Some value"' in text
+    assert '}' in text
+
+    # switch back to quick view and verify data consistency
+    client.find_element_by_id('quick-tab').click()
+    div = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+    assert div.text == 'set_value'
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    assert target_field.get_attribute('value') == 'SCH.12'
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    assert target_field.get_attribute('value') == 'Some value'
+
+def test_can_switch_to_quick_view(client):
+    client.get('http://localhost:8000')
+
+    ops = [{"operation":"copy_value","target_field":"MSH.9.1","source_field":"MSH.9.2"},{"operation":"set_value","target_field":"MSH.9.3","args":{"value":"SIU_S12"}}]
+
+    # given a JSON-formatted scheme, switch to quick view
+    client.find_element_by_id('advanced-tab').click()
+    textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
+    textarea.clear()
+    textarea.send_keys(json.dumps(ops))
+    client.save_screenshot('screenshot.png')
+
+    # switch to quick view and verify list of rules
+    client.find_element_by_id('quick-tab').click()
+    for index, op in enumerate(ops):
+        div = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+        assert div[index].text == op['operation']
+        target_field = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+        assert target_field[index].get_attribute('value') == op['target_field']
+
+    # switch back to advanced view and compare JSON
+    client.find_element_by_id('advanced-tab').click()
+    textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
+    text = textarea.get_attribute("value")
+    assert json.loads(text) == ops
+
+def test_example_orm(client):
+    client.get('http://localhost:8000/examples/create_orm_o01_message')
+    assert 'HL7 Transform Web UI' == client.title
+    message_field = client.find_element_by_id('message_in')
+    assert message_field.text == r'MSH|^~\&'
+    rule_list = client.find_elements_by_xpath('//ul[@id="rule-list"]/li')
+    assert len(rule_list) == 34
+    transform_btn = client.find_element_by_name('transform-btn')
+    transform_btn.click()
+    # client.find_element_by_id('advanced-tab').click()
+    message_field = client.find_element_by_id('message_out')
+    assert r'MSH|^~\&|||||202006171230||ORM^O01|' in message_field.text
+    assert r'PV1||U||||||||MY_HOSPITAL_UNIT_EXTID|||||||||' in message_field.text
+    assert r'||MY_VISIT_MOTIVE_EXTID^MY_VISIT_MOTIVE_TEXT^MY_HOSPITAL_UNIT_EXTID|Low|20200507172300|||||||RELEVANT_CLINICAL_INFO|||^ORDERING_PROVIDER_FAMILY_NAME|||||||||||^^^20200507172300^20200507172330^Low|||TRANSPORTATION_MODE|REASON_FOR_STUDY' in message_field.text
