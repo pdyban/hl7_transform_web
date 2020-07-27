@@ -6,7 +6,10 @@ print(sys.path)
 import json
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import threading
 from app import app
 
@@ -28,9 +31,6 @@ def client():
         with app.app_context():
             # e.g. app.init_db()
             pass
-         # start the Flask server in a thread
-        # thread = threading.Thread(target=app.run, daemon=True)
-        # thread.start()
         yield browser
 
     browser.close()
@@ -135,8 +135,10 @@ def test_can_switch_to_quick_view(client):
 
     # given a JSON-formatted scheme, switch to quick view
     client.find_element_by_id('advanced-tab').click()
-    textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
-    textarea.click()
+    # textarea = client.find_element_by_xpath('//textarea[@id="mapping_scheme"]')
+    textarea = WebDriverWait(client, 10).until(EC.presence_of_element_located((By.XPATH, '//textarea[@id="mapping_scheme"]')))
+    # textarea.click()
+    client.execute_script("arguments[0].click();", textarea)
     textarea.clear()
     textarea.send_keys(json.dumps(ops))
     client.save_screenshot('screenshot.png')
@@ -169,3 +171,45 @@ def test_example_orm(client):
     assert r'MSH|^~\&|||||202006171230||ORM^O01|' in message_field.text
     assert r'PV1||U||||||||MY_HOSPITAL_UNIT_EXTID|||||||||' in message_field.text
     assert r'||MY_VISIT_MOTIVE_EXTID^MY_VISIT_MOTIVE_TEXT^MY_HOSPITAL_UNIT_EXTID|Low|20200507172300|||||||RELEVANT_CLINICAL_INFO|||^ORDERING_PROVIDER_FAMILY_NAME|||||||||||^^^20200507172300^20200507172330^Low|||TRANSPORTATION_MODE|REASON_FOR_STUDY' in message_field.text
+
+def test_workflow(client):
+    client.get('http://localhost:8000/')
+
+    # enter message
+    message_field = client.find_element_by_id('message_in')
+    message_field.click()
+    message_field.send_keys(r'MSH|^~\&')
+
+    # create mappings cheme in quick view
+    client.find_element_by_id('newRuleButton').click()
+    client.find_element_by_xpath('//a[@class="dropdown-item"][text()="set_value"]').click()
+    rules = client.find_elements_by_xpath('//ul[@id="rule-list"]/li')
+    assert len(rules) == 1
+    #div = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+    #assert div.text == 'set_value'
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    target_field.send_keys('MSH.5')
+    target_field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    target_field.send_keys('Sender')
+
+    # compute transformed message
+    client.find_element_by_name('transform-btn').click()
+
+    # verify message_out
+    message_field = client.find_element_by_id('message_out')
+    assert message_field.text == r'MSH|^~\&|||Sender'
+
+def test_empty_workflow(client):
+    client.get('http://localhost:8000/')
+
+    # enter message
+    message_field = client.find_element_by_id('message_in')
+    message_field.click()
+    message_field.send_keys(r'MSH|^~\&')
+
+    # compute message transformed with an empty scheme
+    client.find_element_by_name('transform-btn').click()
+
+    # verify message_out
+    message_field = client.find_element_by_id('message_out')
+    assert message_field.text == r'MSH|^~\&'

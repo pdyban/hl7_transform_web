@@ -46,7 +46,12 @@ $(document).on('click', '.icon-delete', function () {
    $(this).closest('li').remove();
 });
 
+$("#transform-btn").on('click', function(e) {
+  updateAdvancedView();
+});
+
 function updateAdvancedView() {
+  console.log('updateAdvancedView');
   var l = [];
 
   function convertToDict(item) {
