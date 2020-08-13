@@ -70,6 +70,22 @@ $(document).on('click', '.button-moveup', function () {
     }
 });
 
+$(document).on('click', '.copy-message-out-to-clipboard', function() {copy_to_clipboard('#message_out')});
+$(document).on('click', '.copy-mapping-scheme-to-clipboard', function() {copy_to_clipboard('#mapping_scheme')});
+
+function copy_to_clipboard(textarea_id) {
+  var textArea = $(textarea_id);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+  } catch (err) {
+    console.error('Fallback: unable to copy', err);
+  }
+};
+
+
 function updateRuleIndices() {
   $.each($('ul#rule-list li'), function(index, item) { item.firstChild.innerHTML = index + 1; });
 }
