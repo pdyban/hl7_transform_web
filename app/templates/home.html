@@ -46,8 +46,9 @@
 
      <div class="tab-content" id="mapping-content">
       <div class="tab-pane fade show active align-items-start" id="quick" role="tabpanel" aria-labelledby="quick-tab">
-        <!-- <p class="card-text">Quick editing of mapping scheme</p> -->
-        <!-- <button type="button" class="btn btn-secondary disabled">Import</button> -->
+        <ul class="list-group" id="rule-list">
+        </ul>
+
         <div class="btn-group" role="group">
           <button id="newRuleButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             + New rule
@@ -55,9 +56,6 @@
           <div class="dropdown-menu" aria-labelledby="new-rule-dropdown">
           </div>
         </div>
-
-        <ul class="list-group" id="rule-list">
-        </ul>
       </div>
 
       <div class="tab-pane" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">

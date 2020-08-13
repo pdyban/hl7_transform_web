@@ -13,7 +13,7 @@ $(function() {
   for (const [name, factory] of Object.entries(supported_rules)) {
     var el = document.createElement('a');
     el.className = 'dropdown-item';
-    el.href = '#';
+    //el.href = '#';
     el.innerHTML = name;
     $(el).on('click', function(e){
         addEmptyRule(name);
