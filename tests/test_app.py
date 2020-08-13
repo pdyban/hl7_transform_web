@@ -213,3 +213,69 @@ def test_empty_workflow(client):
     # verify message_out
     message_field = client.find_element_by_id('message_out')
     assert message_field.text == r'MSH|^~\&'
+
+def test_can_move_rules(client):
+    client.get('http://localhost:8000/examples/create_orm_o01_message')
+    rule_items = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div[@name=index]')
+    for index, rule_item in enumerate(rule_items, start=1):
+        assert rule_item.text == str(index+1)
+
+    # move first item up should do nothing
+    field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    target_field = field.get_attribute('value')
+    field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    rule_value = field.get_attribute('value')
+    button = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/a[@class="button-moveup"]')
+    assert button is not None
+    button.click()
+    field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    assert target_field == field.get_attribute('value')
+    field = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    assert rule_value == field.get_attribute('value')
+
+    # move the second item one up and verify data integrity
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    target_fields = (fields[0].get_attribute('value'), fields[1].get_attribute('value'),)
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    rule_values = (fields[0].get_attribute('value'), fields[1].get_attribute('value'),)
+    buttons = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/a[@class="button-moveup"]')
+    assert len(buttons) > 1
+    buttons[1].click()
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    assert fields[0].get_attribute('value') == target_fields[1]
+    assert fields[1].get_attribute('value') == target_fields[0]
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    assert fields[0].get_attribute('value') == rule_values[1]
+    assert fields[1].get_attribute('value') == rule_values[0]
+
+    # move the same item from position 0 back to position 1
+    button = client.find_element_by_xpath('//ul[@id="rule-list"]/li/div/a[@class="button-movedown"]')
+    button.click()
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    assert fields[0].get_attribute('value') == target_fields[0]
+    assert fields[1].get_attribute('value') == target_fields[1]
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-value"]')
+    assert fields[0].get_attribute('value') == rule_values[0]
+    assert fields[1].get_attribute('value') == rule_values[1]
+
+    # verify that the ID changes when the item is moved up
+    rule_items = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div[@name=index]')
+    for index, rule_item in enumerate(rule_items, start=1):
+        assert rule_item.text == str(index+1)
+
+    # move the bottom-most item down, shoul not change anything
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    num_rules = len(fields)
+    target_fields = (fields[num_rules-2].get_attribute('value'), fields[num_rules-1].get_attribute('value'),)
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+    rule_names = (fields[num_rules-2].get_attribute('value'), fields[num_rules-1].get_attribute('value'),)
+    buttons = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/a[@class="button-movedown"]')
+    assert len(buttons) == num_rules
+    buttons[num_rules-1].click()
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div/input[@name="rule-target-field"]')
+    assert len(fields) == num_rules
+    assert fields[num_rules-2].get_attribute('value') == target_fields[0]
+    assert fields[num_rules-1].get_attribute('value') == target_fields[1]
+    fields = client.find_elements_by_xpath('//ul[@id="rule-list"]/li/div[@name="rule-name"]')
+    assert fields[num_rules-2].get_attribute('value') == rule_names[0]
+    assert fields[num_rules-1].get_attribute('value') == rule_names[1]

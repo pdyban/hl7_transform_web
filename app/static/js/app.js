@@ -46,6 +46,34 @@ $(document).on('click', '.icon-delete', function () {
    $(this).closest('li').remove();
 });
 
+$(document).on('click', '.button-movedown', function () {
+    var listItem = $(this).closest('li');
+    var hook = listItem.next('li');
+    var index = listItem.children('div[name="index"]')[0].innerHTML;
+    var numRules = $('ul#rule-list li').length;
+    if (index < numRules) {
+        var elementToMove = listItem.detach();
+        hook.after(elementToMove);
+        updateRuleIndices();
+    }
+});
+
+$(document).on('click', '.button-moveup', function () {
+    var listItem = $(this).closest('li');
+    var hook = listItem.prev('li');
+    var index = listItem.children('div[name="index"]')[0].innerHTML;
+    if (index > 1)
+    {
+      var elementToMove = listItem.detach();
+      hook.before(elementToMove);
+      updateRuleIndices();
+    }
+});
+
+function updateRuleIndices() {
+  $.each($('ul#rule-list li'), function(index, item) { item.firstChild.innerHTML = index + 1; });
+}
+
 $("#transform-btn").on('click', function(e) {
   updateAdvancedView();
 });
@@ -186,6 +214,8 @@ function create_rule_set_value() {
   li.appendChild(ruleNameDiv('set_value'));
   li.appendChild(targetFieldDiv());
   li.appendChild(valueDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.SetValueOperation'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -199,6 +229,8 @@ function create_rule_copy_value() {
   li.appendChild(ruleNameDiv('copy_value'));
   li.appendChild(targetFieldDiv());
   li.appendChild(sourceFieldDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.CopyValueOperation'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -214,6 +246,8 @@ function create_rule_add_values() {
   li.appendChild(operandDiv());
   li.appendChild(operandDiv());
   li.appendChild(valueTypeDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.AddValuesOperation'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -226,6 +260,8 @@ function create_rule_generate_alphanumeric_id() {
   li.appendChild(ruleIndexDiv($('ul#rule-list li').length+1));
   li.appendChild(ruleNameDiv('generate_alphanumeric_id'));
   li.appendChild(targetFieldDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.GenerateAplhanumericID'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -238,6 +274,8 @@ function create_rule_generate_numeric_id() {
   li.appendChild(ruleIndexDiv($('ul#rule-list li').length+1));
   li.appendChild(ruleNameDiv('generate_numeric_id'));
   li.appendChild(targetFieldDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.GenerateNumericID'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -253,6 +291,8 @@ function create_rule_concatenate_values() {
   li.appendChild(operandDiv());
   li.appendChild(operandDiv());
   li.appendChild(separatorDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.ConcatenateOperation'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -265,6 +305,8 @@ function create_rule_generate_current_datetime() {
   li.appendChild(ruleIndexDiv($('ul#rule-list li').length+1));
   li.appendChild(ruleNameDiv('generate_current_datetime'));
   li.appendChild(targetFieldDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.GenerateCurrentDatetime'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -279,6 +321,8 @@ function create_rule_set_end_time() {
   li.appendChild(targetFieldDiv());
   li.appendChild(startTimeDiv());
   li.appendChild(durationDiv());
+  li.appendChild(arrowUpDiv());
+  li.appendChild(arrowDownDiv());
   li.appendChild(helpItemDiv('https://hl7-transform.readthedocs.io/en/latest/mapping.html#hl7_transform.operations.SetEndTime'));
   li.appendChild(deleteItemDiv());
   $('#rule-list').append(li);
@@ -299,6 +343,7 @@ function addEmptyRule(name) {
 function ruleIndexDiv(index) {
   var div = document.createElement('div');
   div.className = 'p-2';
+  div.setAttribute('name', 'index');
   div.innerHTML = index;
   return div;
 }
@@ -369,14 +414,28 @@ function selectDiv(name, options) {
 function deleteItemDiv() {
   var div = document.createElement('div');
   div.className = 'p-2';
-  div.innerHTML = '<a href="#" class="icon-delete"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></a>';
+  div.innerHTML = '<a class="icon-delete"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></a>';
   return div;
 }
 
 function helpItemDiv(link) {
   var div = document.createElement('div');
+  div.className = 'p-2';
+  div.innerHTML = '<a href="' + link + '" target="help" class="icon-help"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/></svg></a>';
+  return div;
+}
+
+function arrowUpDiv() {
+  var div = document.createElement('div');
   div.className = 'ml-auto p-2';
-  div.innerHTML = '<a href="' + link + '" target="help"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/></svg></a>';
+  div.innerHTML = '<a class="button-moveup"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/><path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8 3.707 5.354 6.354a.5.5 0 1 1-.708-.708l3-3z"/></svg></a>';
+  return div;
+}
+
+function arrowDownDiv() {
+  var div = document.createElement('div');
+  div.className = 'p-2';
+  div.innerHTML = '<a class="button-movedown"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.646 9.646a.5.5 0 0 1 .708 0L8 12.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/><path fill-rule="evenodd" d="M8 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/></svg></a>';
   return div;
 }
 

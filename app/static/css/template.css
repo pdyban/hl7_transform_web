@@ -11,3 +11,15 @@ body {
 textarea {
   font-family: monospace;
 }
+svg.bi-trash:hover {
+  fill: red;
+}
+svg:hover {
+  fill: blue;
+}
+svg.bi-question-square {
+  fill: black;
+}
+svg.bi-question-square:hover {
+  fill: blue;
+}
