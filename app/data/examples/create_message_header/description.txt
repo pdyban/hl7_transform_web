@@ -1,0 +1,1 @@
+Create a generic HL7v2 message header

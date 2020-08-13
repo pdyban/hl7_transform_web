@@ -1,0 +1,59 @@
+[
+  {
+    "operation": "set_value",
+    "target_field": "MSH.3",
+    "args": {
+      "value": "Postman"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.5",
+    "args": {
+      "value": "Doctolib"
+    }
+  },
+  {
+    "operation": "generate_current_datetime",
+    "target_field": "MSH.7"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.9",
+    "args": {
+      "value": "ADT^A01^ADT_A01"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.11",
+    "args": {
+      "value": "P"
+    }
+  },
+  {
+    "operation": "generate_alphanumeric_id",
+    "target_field": "MSH.10"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.12",
+    "args": {
+      "value": "2.5.1"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.18",
+    "args": {
+      "value": "UTF-8"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.17",
+    "args": {
+      "value": "DEU"
+    }
+  }
+]

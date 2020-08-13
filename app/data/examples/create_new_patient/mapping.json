@@ -1,0 +1,138 @@
+[
+  {
+    "operation": "set_value",
+    "target_field": "MSH.3",
+    "args": {
+      "value": "Postman"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.5",
+    "args": {
+      "value": "Doctolib"
+    }
+  },
+  {
+    "operation": "generate_current_datetime",
+    "target_field": "MSH.7"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.9",
+    "args": {
+      "value": "ADT^A01^ADT_A01"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.11",
+    "args": {
+      "value": "P"
+    }
+  },
+  {
+    "operation": "generate_alphanumeric_id",
+    "target_field": "MSH.10"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.12",
+    "args": {
+      "value": "2.5.1"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.18",
+    "args": {
+      "value": "UTF-8"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "MSH.17",
+    "args": {
+      "value": "DEU"
+    }
+  },
+  {
+    "operation": "generate_numeric_id",
+    "target_field": "PID.3.1"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.3.3",
+    "args": {
+      "value": "Doctolib"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.3.4",
+    "args": {
+      "value": "PI"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.5.1",
+    "args": {
+      "value": "Bull"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.5.2",
+    "args": {
+      "value": "John"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.5.6",
+    "args": {
+      "value": "L"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.7",
+    "args": {
+      "value": "19900101"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.8",
+    "args": {
+      "value": "M"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.9.7",
+    "args": {
+      "value": "M"
+    }
+  },
+  {
+    "operation": "copy_value",
+    "target_field": "PID.9.1",
+    "source_field": "PID.5.1"
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.13.1",
+    "args": {
+      "value": "+491761234567"
+    }
+  },
+  {
+    "operation": "set_value",
+    "target_field": "PID.13.4",
+    "args": {
+      "value": "john.bull@gmail.com"
+    }
+  }
+]
