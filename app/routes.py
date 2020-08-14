@@ -42,6 +42,10 @@ def home():
             alert.text = 'Could not read your mapping scheme. Please check if the JSON format is valid.'
             alert.trace = str(e)
             alert.error_status = True
+        except (IndexError, KeyError, RuntimeError) as e:
+            alert.text = 'Error occurred during processing.'
+            alert.trace = str(e)
+            alert.error_status = True
     return render_template("home.html", form=form, alert=alert)
 
 @app.route('/examples')
