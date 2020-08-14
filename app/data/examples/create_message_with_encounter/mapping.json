@@ -73,7 +73,7 @@
   },
   {
     "operation": "copy_value",
-    "target_field": "EVN.2",
+    "target_field": "EVN.1",
     "source_field": "MSH.9.2"
   },
   {
