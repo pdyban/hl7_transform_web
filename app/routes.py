@@ -1,9 +1,7 @@
 from app import app
 from app import forms
 from flask import render_template, abort
-from flask import request
 from collections import namedtuple
-from markupsafe import escape
 import os
 from hl7_transform.mapping import HL7Mapping
 from hl7_transform.transform import HL7Transform
@@ -28,16 +26,12 @@ def home():
             message = HL7Message.from_string(form.message.data)
             mapping = HL7Mapping.from_string(form.mapping.data)
             transform = HL7Transform(mapping)
-            message_out = transform.execute(message)
+            transform.execute(message)
             form.message_out.data = message.to_string()
         except APIError as e:
             alert.text = 'Could not read HL7 message. Please check your format.'
             alert.trace = e.args[0]
             alert.error_status = True
-        # except (TypeError, IndexError) as e:
-        #     alert.text = 'Could not read HL7 message. Please check your format.'
-        #     alert.trace = str(e)
-        #     alert.error_status = True
         except json.decoder.JSONDecodeError as e:
             alert.text = 'Could not read your mapping scheme. Please check if the JSON format is valid.'
             alert.trace = str(e)
@@ -47,6 +41,7 @@ def home():
             alert.trace = str(e)
             alert.error_status = True
     return render_template("home.html", form=form, alert=alert)
+
 
 @app.route('/examples')
 def example():
@@ -63,6 +58,7 @@ def example():
             continue
     return render_template("examples.html", items=items)
 
+
 @app.route('/examples/<path:example_name>')
 def example_page(example_name):
     if not os.path.exists(f'app/data/examples/{example_name}'):
@@ -74,6 +70,7 @@ def example_page(example_name):
     with open(f'app/data/examples/{example_name}/mapping.json') as f:
         form.mapping.data = f.read().strip()
     return render_template("home.html", form=form, alert=alert)
+
 
 @app.route('/about')
 def about():
