@@ -21,7 +21,7 @@ jobs:
         python -m venv venv
         source venv/bin/activate
         python -m pip install -r requirements.txt
-        wget -q http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_84.0.4147.135-1_amd64.deb
+        wget -q http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_84.0.4147.135-1_amd64.deb -o google-chrome-stable_current_amd64.deb
         sudo dpkg -i google-chrome-stable_current_amd64.deb
         wget -q https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
