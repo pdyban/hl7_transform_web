@@ -28,16 +28,12 @@ def home():
             message = HL7Message.from_string(form.message.data)
             mapping = HL7Mapping.from_string(form.mapping.data)
             transform = HL7Transform(mapping)
-            message_out = transform.execute(message)
+            message_out = transform(message)
             form.message_out.data = message.to_string()
         except APIError as e:
             alert.text = 'Could not read HL7 message. Please check your format.'
             alert.trace = e.args[0]
             alert.error_status = True
-        # except (TypeError, IndexError) as e:
-        #     alert.text = 'Could not read HL7 message. Please check your format.'
-        #     alert.trace = str(e)
-        #     alert.error_status = True
         except json.decoder.JSONDecodeError as e:
             alert.text = 'Could not read your mapping scheme. Please check if the JSON format is valid.'
             alert.trace = str(e)
