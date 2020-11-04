@@ -1,7 +1,5 @@
-import flask_wtf
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, TextAreaField, validators
-import json
+from wtforms import TextAreaField, validators
 
 
 class TransForm(FlaskForm):
